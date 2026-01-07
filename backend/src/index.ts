@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import aiRoutes from './routes/ai.routes';
 
 // Load environment variables
 dotenv.config();
@@ -31,9 +32,16 @@ app.get('/', (req: Request, res: Response) => {
     endpoints: {
       health: '/health',
       calls: '/api/calls',
+      ai: {
+        chat: '/api/ai/chat',
+        identify: '/api/ai/identify',
+      },
     },
   });
 });
+
+// API Routes
+app.use('/api/ai', aiRoutes);
 
 // API Routes placeholder
 app.get('/api/calls', (req: Request, res: Response) => {
