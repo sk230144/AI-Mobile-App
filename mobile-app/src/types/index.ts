@@ -4,6 +4,9 @@ export type RootStackParamList = {
   Home: undefined;
   CallHistory: undefined;
   CallDetails: { callId: string };
+  Cases: undefined;
+  CaseDetails: { caseId: string };
+  CreateCase: undefined;
 };
 
 export type Call = {
@@ -25,4 +28,16 @@ export type Violation = {
   violation_description: string;
   timestamp_in_call: number;
   confidence_score: number;
+};
+
+export type LegalCase = {
+  id: string;
+  user_id: string;
+  case_title: string;
+  case_status: string;
+  estimated_payout: number;
+  actual_payout: number | null;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
 };

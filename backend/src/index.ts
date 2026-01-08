@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import aiRoutes from './routes/ai.routes';
 import callRoutes from './routes/call.routes';
+import caseRoutes from './routes/case.routes';
 
 // Load environment variables
 dotenv.config();
@@ -44,6 +45,7 @@ app.get('/', (req: Request, res: Response) => {
 // API Routes
 app.use('/api/ai', aiRoutes);
 app.use('/api/calls', callRoutes);
+app.use('/api/cases', caseRoutes);
 
 // 404 handler
 app.use((req: Request, res: Response) => {

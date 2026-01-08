@@ -9,6 +9,7 @@ import SignupScreen from '../screens/SignupScreen';
 import HomeScreen from '../screens/HomeScreen';
 import CallHistoryScreen from '../screens/CallHistoryScreen';
 import CallDetailsScreen from '../screens/CallDetailsScreen';
+import CasesScreen from '../screens/CasesScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -44,6 +45,7 @@ export default function AppNavigator() {
             <Stack.Screen name="Home" component={HomeScreen} />
             <Stack.Screen name="CallHistory" component={CallHistoryScreen} />
             <Stack.Screen name="CallDetails" component={CallDetailsScreen} />
+            <Stack.Screen name="Cases" component={CasesScreen} />
           </>
         )}
       </Stack.Navigator>

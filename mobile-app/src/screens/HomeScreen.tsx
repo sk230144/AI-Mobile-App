@@ -210,6 +210,15 @@ export default function HomeScreen({ navigation }: Props) {
             ))
           )}
         </View>
+
+        {/* Legal Cases Button */}
+        <TouchableOpacity
+          style={styles.actionButton}
+          onPress={() => navigation.navigate('Cases')}
+        >
+          <Text style={styles.actionButtonText}>⚖️ Legal Cases</Text>
+          <Text style={styles.arrow}>›</Text>
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );
@@ -366,5 +375,25 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: '#ccc',
     marginLeft: 10,
+  },
+  actionButton: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 20,
+    marginHorizontal: 20,
+    marginBottom: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  actionButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
   },
 });
