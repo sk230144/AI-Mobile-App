@@ -19,15 +19,39 @@ export default function AppNavigator() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setIsAuthenticated(!!session);
-    });
+    console.log('🚀 AppNavigator: Initializing auth check...');
 
+    supabase.auth.getSession()
+      .then(({ data: { session }, error }) => {
+        console.log('📱 AppNavigator: Got session response');
+        console.log('Session:', session ? '✅ Found' : '❌ None');
+        console.log('Error:', error ? `❌ ${error.message}` : '✅ None');
+
+        if (error) {
+          console.error('❌ Session error:', error);
+          console.log('🧹 Clearing corrupted session data...');
+          // Clear any corrupted session data
+          supabase.auth.signOut();
+        }
+        setIsAuthenticated(!!session);
+        console.log('✅ Auth state set:', !!session ? 'Authenticated' : 'Not authenticated');
+      })
+      .catch((error) => {
+        console.error('❌ CRITICAL: Failed to get session:', error);
+        console.error('Error details:', JSON.stringify(error, null, 2));
+        setIsAuthenticated(false);
+      });
+
+    console.log('👂 Setting up auth state change listener...');
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      console.log('🔄 Auth state changed:', _event, session ? 'Has session' : 'No session');
       setIsAuthenticated(!!session);
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      console.log('🛑 Cleaning up auth listener');
+      subscription.unsubscribe();
+    };
   }, []);
 
   if (isAuthenticated === null) {
