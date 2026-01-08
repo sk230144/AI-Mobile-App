@@ -76,7 +76,7 @@ export default function SignupScreen({ navigation }: Props) {
           onChangeText={setEmail}
           autoCapitalize="none"
           keyboardType="email-address"
-          editable={!loading}
+          editable={loading ? false : true}
         />
 
         <TextInput
@@ -84,8 +84,8 @@ export default function SignupScreen({ navigation }: Props) {
           placeholder="Password (min 6 characters)"
           value={password}
           onChangeText={setPassword}
-          secureTextEntry
-          editable={!loading}
+          secureTextEntry={true}
+          editable={loading ? false : true}
         />
 
         <TextInput
@@ -93,14 +93,14 @@ export default function SignupScreen({ navigation }: Props) {
           placeholder="Confirm Password"
           value={confirmPassword}
           onChangeText={setConfirmPassword}
-          secureTextEntry
-          editable={!loading}
+          secureTextEntry={true}
+          editable={loading ? false : true}
         />
 
         <TouchableOpacity
           style={[styles.button, loading && styles.buttonDisabled]}
           onPress={handleSignup}
-          disabled={loading}
+          disabled={loading ? true : false}
         >
           {loading ? (
             <ActivityIndicator color="#fff" />
@@ -111,7 +111,7 @@ export default function SignupScreen({ navigation }: Props) {
 
         <TouchableOpacity
           onPress={() => navigation.navigate('Login')}
-          disabled={loading}
+          disabled={loading ? true : false}
         >
           <Text style={styles.linkText}>
             Already have an account? <Text style={styles.linkTextBold}>Sign In</Text>

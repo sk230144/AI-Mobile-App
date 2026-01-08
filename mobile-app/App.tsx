@@ -3,6 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import { View, Text, StyleSheet } from 'react-native';
 import AppNavigator from './src/navigation/AppNavigator';
 
+// Error boundary component to catch and display React errors
 class ErrorBoundary extends React.Component<
   { children: React.ReactNode },
   { hasError: boolean; error: Error | null }
@@ -12,18 +13,19 @@ class ErrorBoundary extends React.Component<
     this.state = { hasError: false, error: null };
   }
 
+  // Update state when an error is caught
   static getDerivedStateFromError(error: Error) {
-    console.error('🔥 ERROR BOUNDARY CAUGHT:', error);
     return { hasError: true, error };
   }
 
+  // Log error details for debugging
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error('🔥 ERROR DETAILS:', error);
-    console.error('🔥 ERROR INFO:', errorInfo);
-    console.error('🔥 ERROR STACK:', error.stack);
+    console.error('Error caught by boundary:', error);
+    console.error('Component stack:', errorInfo.componentStack);
   }
 
   render() {
+    // Display error UI if an error was caught
     if (this.state.hasError && this.state.error) {
       return (
         <View style={styles.errorContainer}>
@@ -34,13 +36,13 @@ class ErrorBoundary extends React.Component<
       );
     }
 
+    // Render children normally if no error
     return this.props.children;
   }
 }
 
+// Main App component
 export default function App() {
-  console.log('🎬 App component rendering...');
-
   return (
     <ErrorBoundary>
       <AppNavigator />
