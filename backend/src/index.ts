@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import aiRoutes from './routes/ai.routes';
+import callRoutes from './routes/call.routes';
 
 // Load environment variables
 dotenv.config();
@@ -42,14 +43,7 @@ app.get('/', (req: Request, res: Response) => {
 
 // API Routes
 app.use('/api/ai', aiRoutes);
-
-// API Routes placeholder
-app.get('/api/calls', (req: Request, res: Response) => {
-  res.json({
-    message: 'Calls API endpoint',
-    data: [],
-  });
-});
+app.use('/api/calls', callRoutes);
 
 // 404 handler
 app.use((req: Request, res: Response) => {
