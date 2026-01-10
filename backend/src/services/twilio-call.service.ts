@@ -159,11 +159,14 @@ export async function handleRecordingComplete(
     // Analyze for violations
     const analysis = await analyzeCallForViolations(transcript);
 
-    // Save to database
+    // Save to database with actual user ID
+    // TODO: In production, get user_id from request/session
+    const userId = 'cd52ff3b-2038-4888-960d-e142e660a544'; // Your Supabase auth user ID
+
     const { data: call, error: callError } = await supabase
       .from('calls')
       .insert({
-        user_id: '00000000-0000-0000-0000-000000000000', // TODO: Get actual user ID
+        user_id: userId,
         caller_number: callerNumber,
         call_duration: duration,
         call_status: 'completed',
