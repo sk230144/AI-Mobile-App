@@ -37,3 +37,8 @@ coverage/
 
 # Misc
 .claude/
+
+# Deployment documentation (contains credentials)
+DEPLOY.md
+DEPLOYMENT_STEPS.md
+backend/DEPLOY.md
