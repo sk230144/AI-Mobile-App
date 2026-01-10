@@ -1,8 +1,72 @@
 import express from 'express';
 import { supabase } from '../utils/supabase';
 import { analyzeCallForViolations } from '../services/violation-detection.service';
+import {
+  generateInitialCallResponse,
+  processSpeechInput,
+  handleRecordingComplete,
+} from '../services/twilio-call.service';
 
 const router = express.Router();
+
+// Twilio webhook: Handle incoming call
+router.post('/incoming', (req, res) => {
+  try {
+    console.log('📞 Incoming call received');
+    console.log('Caller:', req.body.From);
+    console.log('Call SID:', req.body.CallSid);
+
+    const twiml = generateInitialCallResponse();
+    res.type('text/xml');
+    res.send(twiml);
+  } catch (error) {
+    console.error('❌ Error handling incoming call:', error);
+    res.status(500).send('Error processing call');
+  }
+});
+
+// Twilio webhook: Process speech from caller
+router.post('/process-speech', async (req, res) => {
+  try {
+    const speechResult = req.body.SpeechResult || '';
+    const callSid = req.body.CallSid || '';
+
+    console.log(`🗣️ Speech received: "${speechResult}"`);
+
+    const twiml = await processSpeechInput(speechResult, callSid);
+    res.type('text/xml');
+    res.send(twiml);
+  } catch (error) {
+    console.error('❌ Error processing speech:', error);
+    res.status(500).send('Error processing speech');
+  }
+});
+
+// Twilio webhook: Handle recording completion
+router.post('/recording-complete', async (req, res) => {
+  try {
+    const recordingUrl = req.body.RecordingUrl || '';
+    const callSid = req.body.CallSid || '';
+    const callerNumber = req.body.From || '';
+    const duration = parseInt(req.body.RecordingDuration || '0', 10);
+
+    console.log('📹 Recording complete:', {
+      callSid,
+      callerNumber,
+      duration,
+      recordingUrl,
+    });
+
+    // Process recording asynchronously
+    handleRecordingComplete(recordingUrl, callSid, callerNumber, duration);
+
+    // Respond to Twilio immediately
+    res.send('OK');
+  } catch (error) {
+    console.error('❌ Error handling recording:', error);
+    res.status(500).send('Error');
+  }
+});
 
 // Process a call and detect violations
 router.post('/process', async (req, res) => {
