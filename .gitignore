@@ -38,7 +38,16 @@ coverage/
 # Misc
 .claude/
 
-# Deployment documentation (contains credentials)
+# Deployment and setup documentation (may contain credentials)
 DEPLOY.md
-DEPLOYMENT_STEPS.md
+DEPLOYMENT*.md
 backend/DEPLOY.md
+AI_SERVICES_SETUP.md
+CREDENTIALS_GUIDE.md
+DATABASE_SETUP.md
+GITHUB_SETUP.md
+IMPLEMENTATION_GUIDE.md
+PROJECT_*.md
+QUICK_START.md
+STAGE_*.md
+README.md
