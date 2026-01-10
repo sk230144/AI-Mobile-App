@@ -47,7 +47,8 @@ export async function speechToTextFromBuffer(
 ): Promise<string> {
   try {
     // Create a File object from buffer
-    const audioFile = new File([audioBuffer], filename, {
+    const uint8Array = new Uint8Array(audioBuffer);
+    const audioFile = new File([uint8Array], filename, {
       type: 'audio/wav',
     });
 
