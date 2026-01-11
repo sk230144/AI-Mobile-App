@@ -286,16 +286,13 @@ export async function processSpeechInput(
       timestamp: Date.now(),
     });
 
-    // Add natural speech patterns
-    const naturalResponse = addNaturalSpeech(aiResponse);
-
-    // Speak the AI response with SSML
+    // Speak the AI response (without SSML for now to avoid errors)
     response.say(
       {
         voice: 'Polly.Joanna',
         language: 'en-US',
       },
-      naturalResponse
+      aiResponse
     );
 
     // Continue conversation - gather more input
@@ -311,9 +308,22 @@ export async function processSpeechInput(
     response.say('Thank you for calling. Have a great day!');
     response.hangup();
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('❌ Error processing speech:', error);
-    response.say('I apologize, there was a technical issue. Goodbye.');
+    console.error('Error details:', {
+      message: error.message,
+      stack: error.stack,
+      callSid,
+      speechResult
+    });
+
+    response.say(
+      {
+        voice: 'Polly.Joanna',
+        language: 'en-US',
+      },
+      'I apologize, there was a technical issue. Please try again later. Goodbye.'
+    );
     response.hangup();
   }
 
