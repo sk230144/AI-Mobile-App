@@ -26,6 +26,17 @@ app.get('/health', (req: Request, res: Response) => {
   });
 });
 
+// Environment check endpoint (for debugging)
+app.get('/env-check', (req: Request, res: Response) => {
+  res.json({
+    GROQ_API_KEY: process.env.GROQ_API_KEY ? `${process.env.GROQ_API_KEY.substring(0, 10)}...` : 'MISSING',
+    TWILIO_ACCOUNT_SID: process.env.TWILIO_ACCOUNT_SID ? `${process.env.TWILIO_ACCOUNT_SID.substring(0, 10)}...` : 'MISSING',
+    SUPABASE_URL: process.env.SUPABASE_URL ? 'Present' : 'MISSING',
+    AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID ? 'Present' : 'MISSING',
+    NODE_ENV: process.env.NODE_ENV || 'development',
+  });
+});
+
 // Root endpoint
 app.get('/', (req: Request, res: Response) => {
   res.json({
