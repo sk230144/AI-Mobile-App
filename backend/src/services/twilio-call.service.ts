@@ -43,6 +43,8 @@ setInterval(() => {
 export function generateInitialCallResponse(): string {
   const response = new VoiceResponse();
 
+  console.log('🎬 Generating initial call response TwiML...');
+
   // Greet the caller with AI voice
   response.say(
     {
@@ -61,6 +63,7 @@ export function generateInitialCallResponse(): string {
   });
 
   // Gather input from caller (their response)
+  console.log('📝 Setting up Gather with webhook: https://ai-mobile-app-production.up.railway.app/api/calls/process-speech');
   const gather = response.gather({
     input: ['speech'],
     timeout: 5,
@@ -69,11 +72,19 @@ export function generateInitialCallResponse(): string {
     method: 'POST',
   });
 
-  // If no response, prompt again
-  response.say('I didn\'t hear anything. Please speak after the tone.');
-  response.redirect('https://ai-mobile-app-production.up.railway.app/api/calls/incoming');
+  // IMPORTANT: Add a Say inside the Gather so Twilio knows to listen during this time
+  // Without this, Gather won't capture any speech!
+  gather.say('');  // Empty string, but tells Twilio to listen for speech
 
-  return response.toString();
+  // If no response after timeout, end the call
+  response.say('I didn\'t hear anything. Thank you for calling. Goodbye.');
+  response.hangup();
+
+  const twiml = response.toString();
+  console.log('📄 Generated TwiML:');
+  console.log(twiml);
+
+  return twiml;
 }
 
 /**
@@ -288,16 +299,7 @@ export async function processSpeechInput(
       timestamp: Date.now(),
     });
 
-    // Speak the AI response (without SSML for now to avoid errors)
-    response.say(
-      {
-        voice: 'Polly.Joanna',
-        language: 'en-US',
-      },
-      aiResponse
-    );
-
-    // Continue conversation - gather more input
+    // Continue conversation - gather more input AFTER the AI speaks
     const gather = response.gather({
       input: ['speech'],
       timeout: 5,
@@ -306,7 +308,16 @@ export async function processSpeechInput(
       method: 'POST',
     });
 
-    // If no more input, end gracefully
+    // Say the AI response INSIDE the gather so Twilio listens while speaking
+    gather.say(
+      {
+        voice: 'Polly.Joanna',
+        language: 'en-US',
+      },
+      aiResponse
+    );
+
+    // If no more input after timeout, end gracefully
     response.say('Thank you for calling. Have a great day!');
     response.hangup();
 
