@@ -28,16 +28,24 @@ router.post('/incoming', (req, res) => {
 // Twilio webhook: Process speech from caller
 router.post('/process-speech', async (req, res) => {
   try {
+    console.log('🔔 /process-speech webhook called');
+    console.log('Request body:', JSON.stringify(req.body, null, 2));
+
     const speechResult = req.body.SpeechResult || '';
     const callSid = req.body.CallSid || '';
 
     console.log(`🗣️ Speech received: "${speechResult}"`);
+    console.log(`📞 Call SID: ${callSid}`);
+    console.log(`🔑 GROQ_API_KEY present: ${!!process.env.GROQ_API_KEY}`);
 
     const twiml = await processSpeechInput(speechResult, callSid);
+
+    console.log('✅ TwiML generated successfully');
     res.type('text/xml');
     res.send(twiml);
   } catch (error) {
     console.error('❌ Error processing speech:', error);
+    console.error('Error stack:', error instanceof Error ? error.stack : 'No stack');
     res.status(500).send('Error processing speech');
   }
 });

@@ -245,6 +245,7 @@ export async function processSpeechInput(
 
   try {
     console.log(`📞 Processing speech from call ${callSid}: "${speechResult}"`);
+    console.log(`🔑 Environment check: GROQ_API_KEY=${process.env.GROQ_API_KEY?.substring(0, 10)}...`);
 
     // Get or create conversation for this call
     let conversation = conversationCache.get(callSid);
@@ -272,6 +273,7 @@ export async function processSpeechInput(
     }
 
     // Generate AI response using conversation history
+    console.log(`🔄 Calling Groq API with ${conversation.history.length} conversation turns...`);
     const aiResponse = await generateAIResponse(
       speechResult,
       conversation.history,
@@ -340,6 +342,8 @@ async function generateAIResponse(
   detectedIntent: string
 ): Promise<string> {
   try {
+    console.log(`🎯 Generating AI response for intent: ${detectedIntent}`);
+
     // Get adaptive system prompt based on intent
     const systemPrompt = getAdaptivePrompt(detectedIntent);
 
@@ -369,6 +373,7 @@ CRITICAL RULES:
     }
 
     // Generate response with full context
+    console.log(`📤 Sending request to Groq API...`);
     const completion = await groq.chat.completions.create({
       messages,
       model: 'llama-3.3-70b-versatile',
@@ -377,13 +382,18 @@ CRITICAL RULES:
       top_p: 0.9,
     });
 
+    console.log(`📥 Received response from Groq API`);
+
     const aiResponse = completion.choices[0]?.message?.content ||
       'Um, I see. Could you tell me more about that?';
 
     return aiResponse;
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('❌ Error generating AI response:', error);
+    console.error('Error message:', error.message);
+    console.error('Error code:', error.code);
+    console.error('Error status:', error.status);
     return 'Well, I understand. Could you please provide more details?';
   }
 }
