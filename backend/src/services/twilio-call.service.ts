@@ -57,7 +57,7 @@ export function generateInitialCallResponse(): string {
     transcribe: false, // We'll use Groq for transcription
     maxLength: 300, // 5 minutes max
     playBeep: false,
-    action: '/api/calls/recording-complete', // Where to send recording URL
+    action: 'https://ai-mobile-app-production.up.railway.app/api/calls/recording-complete', // Where to send recording URL
   });
 
   // Gather input from caller (their response)
@@ -65,13 +65,13 @@ export function generateInitialCallResponse(): string {
     input: ['speech'],
     timeout: 5,
     speechTimeout: 'auto',
-    action: '/api/calls/process-speech',
+    action: 'https://ai-mobile-app-production.up.railway.app/api/calls/process-speech',
     method: 'POST',
   });
 
   // If no response, prompt again
   response.say('I didn\'t hear anything. Please speak after the tone.');
-  response.redirect('/api/calls/incoming');
+  response.redirect('https://ai-mobile-app-production.up.railway.app/api/calls/incoming');
 
   return response.toString();
 }
@@ -302,7 +302,7 @@ export async function processSpeechInput(
       input: ['speech'],
       timeout: 5,
       speechTimeout: 'auto',
-      action: '/api/calls/process-speech',
+      action: 'https://ai-mobile-app-production.up.railway.app/api/calls/process-speech',
       method: 'POST',
     });
 
